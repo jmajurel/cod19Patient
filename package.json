@@ -1,0 +1,35 @@
+{
+  "name": "cod19patient",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "predebug": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "build:live": "nodemon --watch '*.ts' --exec 'ts-node' src/app.ts",
+    "prestart": "npm run build",
+    "start": "npx ts-node src/app.ts",
+    "debug": "npm run build:live",
+    "test": "jest --runInBand --collectCoverage ./tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmajurel/cod19Patient.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jmajurel/cod19Patient/issues"
+  },
+  "homepage": "https://github.com/jmajurel/cod19Patient#readme",
+  "dependencies": {
+    "@types/express": "^4.17.4",
+    "awilix": "^4.2.5",
+    "awilix-express": "^3.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "ts-node": "^8.8.1",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3"
+  }
+}

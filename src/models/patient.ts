@@ -27,7 +27,7 @@ export default class Patient {
   }
 }
 
-enum Gender {
+export enum Gender {
   male = 1,
   female = 2,
   other = 3

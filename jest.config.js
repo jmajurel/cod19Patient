@@ -1,0 +1,11 @@
+// jest.config.js
+module.exports = {
+  // [...]
+  // Replace `ts-jest` with the preset you want to use
+  // from the above list
+  preset: "@shelf/jest-mongodb",
+  //setupFilesAfterEnv: ["./jest.setup.js"],
+  transform: {
+    "\\.(ts)$": "ts-jest"
+  }
+};

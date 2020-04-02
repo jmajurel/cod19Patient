@@ -1,6 +1,6 @@
 import { MongoClient, Db } from "mongodb";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import SymptomStore from "./stores/symptom.store";
+import PatientStore from "./stores/patient.store";
 import {
   createContainer,
   asClass,
@@ -11,11 +11,11 @@ import {
 
 import PatientService from "../services/patientService";
 import PatientRepository from "../repositories/patientRepository";
-import Patient from "../models/patient";
+import Patient, { Gender } from "../models/patient";
 
 const mongod = new MongoMemoryServer();
 
-let connection: MongoClient = null;
+let connection: MongoClient;
 let db: Db;
 let container: AwilixContainer;
 
@@ -31,11 +31,11 @@ beforeAll(async () => {
   container.register({
     patientService: asClass(PatientService).scoped(),
     patientRepository: asClass(PatientRepository).scoped(),
-    patientStore: asClass(SymptomStore).scoped(),
+    patientStore: asClass(PatientStore).scoped(),
     dbClient: asValue(db)
   });
 
-  const store: SymptomStore = container.resolve("patientStore");
+  const store: PatientStore = container.resolve("patientStore");
   await store.mount();
 });
 
@@ -45,21 +45,63 @@ afterAll(async () => {
 });
 
 describe("get", () => {
-  it("get all symptoms", async () => {
-    const service: SymptomService = container.resolve("symptomService");
-    const store: SymptomStore = container.resolve("symptomStore");
+  it("get all patients", async () => {
+    const service: PatientService = container.resolve("patientService");
+    const store: PatientStore = container.resolve("patientStore");
     const result = await service.getAll();
     expect(result).toBeTruthy();
-    expect(result.length).toBe(store.symptoms.length);
+    expect(result.length).toBe(store.patients.length);
   });
 
-  it("get one symptom by its id", async () => {
-    const service: SymptomService = container.resolve("symptomService");
+  it("get one patient by its id", async () => {
+    const service: PatientService = container.resolve("patientService");
     const result = await service.getAll();
-    const target = result[0];
+    const target: Patient = result[0];
 
-    const foundItem = await service.getById(target._id.toString());
+    const foundItem: Patient = await service.getById(target._id.toString());
     expect(foundItem).toBeTruthy();
-    expect(foundItem.name).toMatch(target.name);
+    expect(foundItem._id).toEqual(target._id);
+  });
+});
+
+describe("insert", () => {
+  it("insert a new patient", async () => {
+    const service: PatientService = container.resolve("patientService");
+    const sarah = new Patient({
+      age: 26,
+      gender: Gender.female,
+      travel: true,
+      symptoms: [""],
+      conditions: [""]
+    });
+    const newlyCreatedPatient: Patient = await service.insert(sarah);
+    expect(newlyCreatedPatient).toBeTruthy();
+    expect(newlyCreatedPatient._id).toBeDefined();
+  });
+});
+
+describe("update", () => {
+  it("update an existing patient", async () => {
+    const service: PatientService = container.resolve("patientService");
+    const target: Patient = (await service.getAll())[0];
+
+    target.age = 100;
+    await service.update(target._id.toString(), target);
+
+    const updatedEntry = await service.getById(target._id.toString());
+    expect(updatedEntry).toBeTruthy();
+    expect(updatedEntry.age).toEqual(target.age);
+  });
+});
+
+describe("delete", () => {
+  it("remove an existing patient", async () => {
+    const service: PatientService = container.resolve("patientService");
+    const target: Patient = (await service.getAll())[0];
+
+    await service.delete(target._id.toString());
+
+    const foundItem: Patient = await service.getById(target._id.toString());
+    expect(foundItem).toBeNull();
   });
 });

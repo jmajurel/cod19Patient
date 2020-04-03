@@ -12,6 +12,13 @@ export default class PatientAPI {
   }
   @GET()
   async getAll(req: Request, res: Response) {
-    res.status(200).json(await this._patientService.getAll());
+    return res.status(200).json(await this._patientService.getAll());
+  }
+  @POST()
+  @before([bodyParser()])
+  async post(req: Request, res: Response) {
+    return res
+      .status(201)
+      .json(await this._patientService.insert(new Patient({ ...req.body })));
   }
 }

@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- 12.16.2
+script:
+- npm run test
+after_script:
+- cat ./coverage/lcov.info | coveralls
+deploy:
+  provider: heroku
+  api_key:
+    secure: 4gYaWOVneIURIfgyewZBOP4TfF79l9xpaZc9lbvR/yfBAxIvB9GbbfRjwKwhfcUUmlflEAwIsTr+YD9lt9cyO4MqVQz852TEpogaTuADzA3EQODcPQNP7Wu3jWfuYxbluC2CTLtlVoGDalYBXyLqvmVDvpIcT84h0AdCbrwIxeol8wXKapRTnWVFDRs0596n9oYN3cuULTw2rtqSKPcK3KmIQqhwKcFIzgPUPjKXQh6n5MwQnShq0C6eub95VzhyaVqt+PMRWwkkO+n1D9liSvcIjDLXkOkFmPC/kcBPLoAW5hMlM7HsvYt/6ML/oMWjzYDQg/VSDO6I2KY6XkcDuvusarURr82BPnzWZVfr9jk0oIT66EtnzkVJmW6BldLdL1uO0qUoPaOaTpPAHE+jz/73qOS+vSstbtWhdFjw/Vf+eHoLeODyL8m3ZRRWChcxA9+r6FGQEPYDFHOAbmSB9JWFR09pn4HJDjoIEKN381pNpK5EMlcs87At7DZsMuo9tvOqNCk7tuQ/MeFeVVgCzDPPmn+TjUnf56a5mmJKozcasavPZnCMNB2zgsQZ/l3Hm3wChvKGHvUf1B8MMpSDBbnucCcVMo8RXItNHEqGTBEoatKojr1qmEIn+ddK08H0MPZC01DVidzYPvPnEwzLZIdGdEQhGD3LWepwL7gYU2w=
+  app:
+    develop: cod19-patient-dev
+    master: cod19-patient
+notifications:
+  email: false
